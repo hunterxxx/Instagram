@@ -95,8 +95,15 @@ public class Instagram {
 
 		Instagram instagram = new Instagram();
 		for (InstagramUserSummary user : instagram.getAllFollowers()) {
-			System.out.println(user.getUsername() + " follows CarRx7Hunter!");
-			System.out.println("ID : " + user.getPk());
+			//System.out.println(user.getUsername() + " follows CarRx7Hunter!");
+			System.out.println(user.getPk());
 		}
+//		System.out.println("Anazahl Follower: " + instagram.getFollowerCount());
+//		System.out.println("Anzahl Following: " + instagram.getFollowingCount());
+//		System.out.println("Anzahl Posts: " + instagram.getPostCount());
+//		System.out.println("Anzahl Likes: ");
+//		System.out.println("Anzahl Kommentare: ");
+		//System.out.println(instagram.getAllFollowers());		
+
 	}
 }
