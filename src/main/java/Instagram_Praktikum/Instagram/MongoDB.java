@@ -20,81 +20,46 @@ public class MongoDB {
 
 	}
 
-	public void insertFollower(String userName, MongoCollection<Document> collection, boolean followStatus) {
+	public void insertFollower(InstagramUserSummary user, MongoCollection<Document> collection, boolean followStatus) {
 		Document insertDoc = new Document();
-		insertDoc.append("user", userName).append("follow status", followStatus);
+		insertDoc.append("user", user.getUsername())
+		.append("follow status", followStatus)
+		.append("Follower ID", user.getPk());
 		collection.insertOne(insertDoc);
 	}
 
 	public void insertNewFollower(MongoCollection<Document> collection, List<InstagramUserSummary> getAllFollowers) {
-//		ArrayList<Long> oldFollowerNames = new ArrayList<Long>();
-//		oldFollowerNames = getFollowerIDsFromDB(collection);
-//		
-//		for(Long oldFollowerNames1 : oldFollowerNames){
-//			System.out.println(oldFollowerNames1);
-//			for (int i = 0; i < getAllFollowers.size(); i++) {
-//				System.out.println(getAllFollowers.get(i)).getPk());
-//			}
-//		}
+		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
+		oldFollowerIDs = getFollowerIDsFromDB(collection);
 //		int followerCount = 0;
-//
+		for (InstagramUserSummary user : getAllFollowers) {
+			if (!(oldFollowerIDs.contains(user.getPk()))) {
+				System.out.println(user.getPk());
+				insertFollower(user, collection, true);				
+			}
+		}
 //		for (int i = 0; i < getAllFollowers.size(); i++) {
-//			if (!(oldFollowerNames.contains(getAllFollowers.get(i).getPk()))) {
+//			if (!(oldFollowerIDs.contains(getAllFollowers.get(i).getPk()))) {
 //				insertFollower(getAllFollowers.get(i).getUsername(), collection, true);
-//				System.out.println("Follower wurde eingefügt!");
 //				followerCount++;
 //			}
 //		}
-//
 //		if (followerCount == 0) {
 //			System.out.println("Keine neuen Follower in DB eingefügt!");
 //		}
-		
-		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
-		oldFollowerIDs = getFollowerIDsFromDB(collection );
-		int followerCount = 0;
-		//Abgleich der akt. followerList mit der der DB	
-		//eintragen neuer Follower
-		for( int i=0; i<getAllFollowers.size(); i++){	    
-		    if( !(oldFollowerIDs.contains(getAllFollowers.get(i).getPk()))){
-			//fügt User in DB ein, folowing status:1
-			insertFollower(getAllFollowers.get(i).getUsername(),collection,true);		
-			//System.out.println("Follower " + followerList.get(i).getScreenName() + " wurde eingefügt!");
-			followerCount ++;
-		    }	    
-		}
-		if( followerCount == 0){
-		    System.out.println("Keine neuen Follower in DB eingefügt!");
-		}
 	}
-	
 
-//	public ArrayList<Long> getOldFollowerID(MongoCollection<Document> collection) {
-//		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
-//		MongoCursor<Document> cursor = collection.find().iterator();
-//		Document docOldFollower;
-//		try {
-//			while (cursor.hasNext()) {
-//				docOldFollower = cursor.next();
-//				oldFollowerIDs.add(docOldFollower.getLong("Follower ID"));
-//			}
-//		} finally {
-//			cursor.close();
-//		}
-//		return oldFollowerIDs;
-//	}
-	
-    private  ArrayList<Long> getFollowerIDsFromDB(MongoCollection<Document> mongoCollection){
-	MongoCursor<Document> idCursor;
-  	Document docOldFollower;
-  	idCursor = mongoCollection.find().iterator();
-  	ArrayList<Long> oldFollowerIDs= new ArrayList<Long>();
-  	while (idCursor.hasNext()) {
-  	    docOldFollower = idCursor.next();
-  	    oldFollowerIDs.add(docOldFollower.getLong("Follower ID"));	    
-  	}
-	return oldFollowerIDs;	
-    }
+	private ArrayList<Long> getFollowerIDsFromDB(MongoCollection<Document> mongoCollection) {
+		MongoCursor<Document> idCursor;
+		Document docOldFollower;
+		idCursor = mongoCollection.find().iterator();
+		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
+		while (idCursor.hasNext()) {
+			docOldFollower = idCursor.next();
+			oldFollowerIDs.add(docOldFollower.getLong("Follower ID"));
+		}
+		return oldFollowerIDs;
+	}
 
 	private void showUnfollowers(MongoCollection<Document> collection) {
 		MongoCursor<Document> unFollowCursor;
@@ -121,7 +86,7 @@ public class MongoDB {
 		ArrayList<Long> unFollowerIDs = new ArrayList<Long>();
 
 		for (int i = 0; i < dbFollowerIDs.size(); i++) {
-			System.out.println(dbFollowerIDs.get(i));
+			//System.out.println(dbFollowerIDs.get(i));
 
 			if (!(followerNamesAktuell.contains(dbFollowerIDs.get(i)))) {
 				unFollowerIDs.add(dbFollowerIDs.get(i));
@@ -150,7 +115,7 @@ public class MongoDB {
 		MongoDatabase database = mongoClient.getDatabase("InstagramDB");
 		MongoCollection<Document> collection = database.getCollection("Follower");
 
-		//collection.drop();
+		 collection.drop();
 		mongodb.insertNewFollower(collection, instagram.getAllFollowers());
 		mongodb.setFollowStatus(collection, instagram.getAllFollowers());
 		mongodb.showUnfollowers(collection);
