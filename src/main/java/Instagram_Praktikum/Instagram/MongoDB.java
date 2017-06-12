@@ -6,7 +6,6 @@ import java.util.List;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bytedeco.javacpp.avformat.AVOutputFormat.Get_output_timestamp_AVFormatContext_int_LongPointer_LongPointer;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -23,22 +22,26 @@ public class MongoDB {
 
 	public void insertFollower(InstagramUserSummary user, MongoCollection<Document> collection, boolean followStatus) {
 		Document insertDoc = new Document();
-		insertDoc.append("user", user.getUsername())
-		.append("follow status", followStatus)
-		.append("Follower ID", user.getPk());
+		insertDoc.append("Follower Name", user.getUsername())
+		.append("Follower ID", user.getPk())
+		.append("following status", followStatus);
 		collection.insertOne(insertDoc);
 	}
 
 	public void insertNewFollower(MongoCollection<Document> collection, List<InstagramUserSummary> getAllFollowers) {
 		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
 		oldFollowerIDs = getFollowerIDsFromDB(collection);
+		int followerCount = 0;
+
 		for (InstagramUserSummary user : getAllFollowers) {
 			if (!(oldFollowerIDs.contains(user.getPk()))) {
 				System.out.println(user.getPk());
 				System.out.println(user.getUsername());
-				insertFollower(user, collection, true);				
-			} else{
-				System.out.println("No new Follower");
+				insertFollower(user, collection, true);	
+				followerCount ++;
+			} 
+			if( followerCount == 0){
+			    System.out.println("Keine neuen Follower in DB eingefügt!");
 			}
 		}
 	}
@@ -121,7 +124,7 @@ public class MongoDB {
 		MongoDatabase database = mongoClient.getDatabase("InstagramDB");
 		MongoCollection<Document> collection = database.getCollection("Follower");
 
-		 //collection.drop();
+		//collection.drop();
 		mongodb.insertNewFollower(collection, instagram.getAllFollowers());
 		mongodb.setFollowStatus(collection, instagram.getAllFollowers());
 		mongodb.showUnfollowers(collection);

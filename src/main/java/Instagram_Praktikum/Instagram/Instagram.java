@@ -28,11 +28,6 @@ public class Instagram {
 		}
 	}
 
-	public long getUserID() {
-		long ID = request().getUser().getPk();
-		return ID;
-	}
-
 	public Instagram4j login() throws ClientProtocolException, IOException {
 		Instagram4j instagram = Instagram4j.builder().username("lisaleehunterfoo@gmail.com").password("hehe1234")
 				.build();
