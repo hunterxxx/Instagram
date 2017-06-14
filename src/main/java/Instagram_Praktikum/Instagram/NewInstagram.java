@@ -1,5 +1,6 @@
 package Instagram_Praktikum.Instagram;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,8 +9,6 @@ import org.jinstagram.auth.InstagramAuthService;
 import org.jinstagram.auth.model.Token;
 import org.jinstagram.auth.model.Verifier;
 import org.jinstagram.auth.oauth.InstagramService;
-import org.jinstagram.entity.common.Comments;
-import org.jinstagram.entity.common.Likes;
 import org.jinstagram.entity.users.basicinfo.UserInfo;
 import org.jinstagram.entity.users.basicinfo.UserInfoData;
 import org.jinstagram.entity.users.feed.MediaFeed;
@@ -24,26 +23,45 @@ public class NewInstagram {
 	String clientSecret = "1e5f25fc47bf4157b8bb3327852c2abc";
 	String callbackUrl = "http://www.instagram.com/handleInstagramToken";
 	
+
+	
 	public NewInstagram() {
 
+	}
+	
+	public String getAccessToken(String uriString) {
+	    URI uri = URI.create(uriString);
+	    System.out.println(uri);
+	    //String[] parameters = uri.getFragment().split("\\&");
+	    //for (String parameter : parameters) {
+        String[] parts = uri.getFragment().split("\\=");
+
+	        //String[] parts = parameter.split("\\=");
+	        if (parts[0].equals("code")) {
+	            if (parts.length == 1) {
+	                throw new RuntimeException("missing access token");
+	            }
+	            System.out.println(parts[1]);
+	            return parts[1];
+	        }
+	    //}
+	    throw new RuntimeException("no access token");
 	}
 
 	public void login() throws InstagramException {
 		InstagramService service = new InstagramAuthService().apiKey(clientId).apiSecret(clientSecret)
-				.callback(callbackUrl).scope("basic public_content likes follower_list relationships").build();
+				.callback(callbackUrl).scope("basic").build();
+		//public_content likes follower_list relationships
 
-		//String authorizationUrl = service.getAuthorizationUrl();
+		String authorizationUrl = service.getAuthorizationUrl();	    
+		System.out.println(authorizationUrl); //paste in browser
 
-	    String authorizationUrl = service.getAuthorizationUrl();
-
-	   // System.out.println(authorizationUrl); //paste in browser
-
-	    Scanner sc = new Scanner(System.in);
+	    //Scanner sc = new Scanner(System.in);
 
 	    //System.out.println("Paste the code gotten in the browser (at the end of the URL):  ");
 	    //String verCode = sc.nextLine();  //SCAN VERIFIER CODE
 
-	    Verifier verifier = new Verifier("935c143c050b47039d0599733dae2cae");
+	    Verifier verifier = new Verifier(getAccessToken(authorizationUrl));
 
 	    Token accessToken = service.getAccessToken(verifier);  //Token successfully gotten
 
@@ -57,7 +75,8 @@ public class NewInstagram {
 		List<MediaFeedData> mediaFeeds = mediaFeed.getData();
 
 		UserFeed feed = instagram.getUserFollowedByList(userId);
-		List<UserFeedData> users = feed.getUserList();
+		List<UserFeedData> following = feed.getUserList();
+		System.out.println("Anzahl Following: " + following);
 		
 		UserInfoData userData = userInfo.getData();
 		
@@ -73,6 +92,7 @@ public class NewInstagram {
 		}
 		System.out.println("Anzahl Likes:" + likesCount);
 		System.out.println("Anzahl Comments:" + commentsCount);
+		
 
 		
 //		System.out.println("id : " + userData.getId());
