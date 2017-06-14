@@ -37,6 +37,10 @@
 			<artifactId>scribejava-apis</artifactId>
 			<version>4.1.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.sachinhandiekar</groupId>
+			<artifactId>jInstagram</artifactId>
+			<version>1.2.1</version>
+		</dependency>
 	</dependencies>
 </project>

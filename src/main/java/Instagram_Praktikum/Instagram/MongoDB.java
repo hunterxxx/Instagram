@@ -14,7 +14,7 @@ import com.mongodb.client.MongoDatabase;
 
 public class MongoDB {
 
-	static Instagram instagram = new Instagram();
+	static OldInstagram instagram = new OldInstagram();
 
 	public MongoDB() {
 
@@ -40,9 +40,9 @@ public class MongoDB {
 				insertFollower(user, collection, true);	
 				followerCount ++;
 			} 
-			if( followerCount == 0){
-			    System.out.println("Keine neuen Follower in DB eingefügt!");
-			}
+		}
+		if( followerCount == 0){
+		    System.out.println("Keine neuen Follower in DB eingefügt!");
 		}
 	}
 
@@ -71,12 +71,13 @@ public class MongoDB {
 		}
 		return oldFollowerNames;
 	}
+	
 
-	private void showUnfollowers(MongoCollection<Document> collection) {
+	private void showUnfollowers(MongoCollection<Document> mongoCollection) {
 		MongoCursor<Document> unFollowCursor;
 		Document unFollowDoc;
 		Bson filterStatus = new Document("following status", false);
-		unFollowCursor = collection.find(filterStatus).iterator();
+		unFollowCursor = mongoCollection.find(filterStatus).iterator();
 		int unFollowerCount = 0;
 		while (unFollowCursor.hasNext()) {
 			unFollowDoc = unFollowCursor.next();
@@ -85,6 +86,7 @@ public class MongoDB {
 		}
 		System.out.println(unFollowerCount + " User folgen jetzt nicht mehr!");
 	}
+	
 
 	private void setFollowStatus(MongoCollection<Document> collection, List<InstagramUserSummary> getAllFollowers) {
 		ArrayList<Long> dbFollowerIDs = new ArrayList<Long>();
@@ -122,15 +124,15 @@ public class MongoDB {
 
 		MongoClient mongoClient = new MongoClient();
 		MongoDatabase database = mongoClient.getDatabase("InstagramDB");
-		MongoCollection<Document> collection = database.getCollection("Follower");
+		MongoCollection<Document> mongoCollection = database.getCollection("Follower");
 
 		//collection.drop();
-		mongodb.insertNewFollower(collection, instagram.getAllFollowers());
-		mongodb.setFollowStatus(collection, instagram.getAllFollowers());
-		mongodb.showUnfollowers(collection);
-		System.out.println(mongodb.getFollowerNamesFromDB(collection));
+		mongodb.insertNewFollower(mongoCollection, instagram.getAllFollowers());
+		mongodb.setFollowStatus(mongoCollection, instagram.getAllFollowers());
+		mongodb.showUnfollowers(mongoCollection);
+		System.out.println(mongodb.getFollowerNamesFromDB(mongoCollection));
 
-		mongodb.showCollection(collection);
+		mongodb.showCollection(mongoCollection);
 		mongoClient.close();
 	}
 }
