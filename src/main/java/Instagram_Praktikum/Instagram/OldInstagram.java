@@ -18,28 +18,26 @@ import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 public class OldInstagram {
 
 	public final String id = "carrx7hunter";
+	private Instagram4j instagram;
 	
-	public OldInstagram(){
+	public OldInstagram() throws ClientProtocolException, IOException{
 		// Disable Logs
 		List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
 		loggers.add(LogManager.getRootLogger());
 		for (Logger logger : loggers) {
 			logger.setLevel(Level.OFF);
 		}
-	}
-
-	public Instagram4j login() throws ClientProtocolException, IOException {
-		Instagram4j instagram = Instagram4j.builder().username("lisaleehunterfoo@gmail.com").password("hehe1234")
+		
+		instagram = Instagram4j.builder().username("lisaleehunterfoo@gmail.com").password("hehe1234")
 				.build();
 		instagram.setup();
 		instagram.login();
-		return instagram;
 	}
 
 	public InstagramSearchUsernameResult request() {
 		InstagramSearchUsernameResult userResult = null;
 		try {
-			userResult = login().sendRequest(new InstagramSearchUsernameRequest(id));
+			userResult = instagram.sendRequest(new InstagramSearchUsernameRequest(id));
 			return userResult;
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -68,7 +66,7 @@ public class OldInstagram {
 		InstagramGetUserFollowersResult myFollowers;
 		List<InstagramUserSummary> users = null;
 		try {
-			myFollowers = login().sendRequest(new InstagramGetUserFollowersRequest(request().getUser().getPk()));
+			myFollowers = instagram.sendRequest(new InstagramGetUserFollowersRequest(request().getUser().getPk()));
 			users = myFollowers.getUsers();
 			return users;
 
@@ -82,16 +80,15 @@ public class OldInstagram {
 
 	public static void main(String[] args) throws ClientProtocolException, IOException {
 		OldInstagram instagram = new OldInstagram();
-//		for (InstagramUserSummary user : instagram.getAllFollowers()) {
-//			//System.out.println(user.getUsername() + " follows CarRx7Hunter!");
-//			System.out.println(user.getPk());
-//		}
+		NewInstagram newInstagram = new NewInstagram();
+		for (InstagramUserSummary user : instagram.getAllFollowers()) {
+			//System.out.println(user.getUsername() + " follows CarRx7Hunter!");
+			System.out.println(user.getPk());
+		}
 		System.out.println("Anazahl Follower: " + instagram.getFollowerCount());
 		System.out.println("Anzahl Following: " + instagram.getFollowingCount());
 		System.out.println("Anzahl Posts: " + instagram.getPostCount());
-		System.out.println("Anzahl Likes: ");
-		System.out.println("Anzahl Kommentare: ");
-		//System.out.println(instagram.getAllFollowers());		
-
+		System.out.println("Anzahl Likes: " + newInstagram.likesCount());
+		System.out.println("Anzahl Kommentare: " + newInstagram.commentsCount());
 	}
 }
