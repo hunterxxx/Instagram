@@ -16,10 +16,8 @@ import com.mongodb.client.MongoDatabase;
 
 
 public class NewMongoDB {
-	static OldInstagram instagram;
-
 	// holt die IDs der Follower aus der Datenbank
-	private ArrayList<Long> getFollowerIDsFromDB(MongoCollection<Document> mongoCollection) {
+	ArrayList<Long> getFollowerIDsFromDB(MongoCollection<Document> mongoCollection) {
 		MongoCursor<Document> idCursor;
 		Document docOldFollower;
 		idCursor = mongoCollection.find().iterator();
@@ -32,7 +30,7 @@ public class NewMongoDB {
 	}
 
 	// Collection Inhalt anzeigen (Json)
-	private void showCollection(MongoCollection<Document> mongoCollection) {
+	void showCollection(MongoCollection<Document> mongoCollection) {
 		System.out.println("aktuelle DB-Einträge:");
 		for (Document doc : mongoCollection.find()) {
 			System.out.println("      " + doc.toJson());
@@ -40,7 +38,7 @@ public class NewMongoDB {
 		System.out.println(mongoCollection.count() + " Einträge in DB");
 	}
 
-	private void insertUserinDB(InstagramUserSummary user, MongoCollection<Document> mongoCollection, boolean followStatus) {
+	void insertUserinDB(InstagramUserSummary user, MongoCollection<Document> mongoCollection, boolean followStatus) {
 		Document insertDoc = new Document();
 		insertDoc.append("Follower Name", user.getUsername()).append("Follower ID", user.getPk())
 				.append("following status", followStatus);
@@ -48,7 +46,7 @@ public class NewMongoDB {
 		System.out.println("Follower " + user.getUsername() + " wurde eingefügt!");
 	}
 
-	private void insertNewFollowersInDB(MongoCollection<Document> mongoCollection,List<InstagramUserSummary> followerList) {
+	void insertNewFollowersInDB(MongoCollection<Document> mongoCollection,List<InstagramUserSummary> followerList) {
 		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
 		oldFollowerIDs = getFollowerIDsFromDB(mongoCollection);
 		int followerCount = 0;
@@ -102,23 +100,4 @@ public class NewMongoDB {
 		}
 		System.out.println(unFollowerCount + " User folgen jetzt nicht mehr!");
 	}
-	
-	public static void main(String[] args) throws ClientProtocolException, IOException {
-		NewMongoDB mongodb = new NewMongoDB();
-		instagram = new OldInstagram();
-		MongoClient mongoClient = new MongoClient();
-		MongoDatabase database = mongoClient.getDatabase("InstagramDB");
-		MongoCollection<Document> mongoCollection = database.getCollection("Follower");
-
-		//mongoCollection.drop();
-		mongodb.insertNewFollowersInDB(mongoCollection, instagram.getAllFollowers());
-		mongodb.setFollowStatus(mongoCollection, instagram.getAllFollowers());
-		mongodb.showUnfollowers(mongoCollection);
-		//System.out.println(mongodb.getFollowerNamesFromDB(mongoCollection));
-
-		mongodb.showCollection(mongoCollection);
-		mongoClient.close();
-	}
-
-
 }
