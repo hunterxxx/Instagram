@@ -9,6 +9,8 @@ import org.jinstagram.auth.InstagramAuthService;
 import org.jinstagram.auth.model.Token;
 import org.jinstagram.auth.model.Verifier;
 import org.jinstagram.auth.oauth.InstagramService;
+import org.jinstagram.entity.comments.CommentData;
+import org.jinstagram.entity.comments.MediaCommentResponse;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
@@ -26,7 +28,7 @@ public class NewInstagram {
 
 	public NewInstagram() {
 		InstagramService service = new InstagramAuthService().apiKey(clientId).apiSecret(clientSecret)
-				.callback(callbackUrl).scope("basic public_content likes follower_list relationships").build();
+				.callback(callbackUrl).scope("basic").build();
 		// public_content likes follower_list relationships
 
 		String authorizationUrl = service.getAuthorizationUrl();
@@ -65,5 +67,17 @@ public class NewInstagram {
 			commentsCount += comments;
 		}
 		return commentsCount;
+	}
+	
+	//1d
+	/**
+	 * @params String hashtag, int count
+	 */
+	public void setComments() throws InstagramException{
+		String mediaId = "142856861";
+
+		MediaCommentResponse response = instagram.setMediaComments(mediaId, "Sample Comment");
+		CommentData commentData = response.getCommentData();
+		System.out.println(commentData);
 	}
 }

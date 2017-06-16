@@ -16,11 +16,12 @@ public class Main {
 		OldInstagram instagram = new OldInstagram();
 		NewInstagram newInstagram = new NewInstagram();
 		
-//		for (InstagramUserSummary user : instagram.getAllFollowers()) {
-//			//System.out.println(user.getUsername() + " follows CarRx7Hunter!");
-//			System.out.println(user.getPk());
-//		}
-		
+		System.out.println("All Followers: ");
+		for (InstagramUserSummary user : instagram.getAllFollowers()) {
+			System.out.println(user.getUsername() + " follows CarRx7Hunter!");
+			//System.out.println(user.getPk());
+		}
+				
 		System.out.println("Anazahl Follower: " + instagram.getFollowerCount());
 		System.out.println("Anzahl Following: " + instagram.getFollowingCount());
 		System.out.println("Anzahl Posts: " + instagram.getPostCount());

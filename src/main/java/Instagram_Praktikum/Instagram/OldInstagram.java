@@ -9,8 +9,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.brunocvcunha.instagram4j.Instagram4j;
+import org.brunocvcunha.instagram4j.requests.InstagramFollowRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramGetUserFollowersRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramLikeRequest;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
+import org.brunocvcunha.instagram4j.requests.InstagramTagFeedRequest;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramFeedItem;
+import org.brunocvcunha.instagram4j.requests.payload.InstagramFeedResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramGetUserFollowersResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
@@ -69,7 +74,6 @@ public class OldInstagram {
 			myFollowers = instagram.sendRequest(new InstagramGetUserFollowersRequest(request().getUser().getPk()));
 			users = myFollowers.getUsers();
 			return users;
-
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -77,6 +81,43 @@ public class OldInstagram {
 		}
 		return users;
 	}
+	
+/*
+ * Aufgabe 5	
+ */
+	//1a
+	public List<InstagramUserSummary> getAllFollowersFromAnAccount(String id) {
+		InstagramGetUserFollowersResult myFollowers;
+		InstagramSearchUsernameResult userResult;
+		List<InstagramUserSummary> users = null;
+		try {
+			userResult = instagram.sendRequest(new InstagramSearchUsernameRequest(id));
+			myFollowers = instagram.sendRequest(new InstagramGetUserFollowersRequest(userResult.getUser().getPk()));
+			users = myFollowers.getUsers();
+			return users;
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return users;
+	}
+	
+	//1b
+	public void setFollowers(String name) throws ClientProtocolException, IOException{
+		InstagramSearchUsernameResult userResult = instagram.sendRequest(new InstagramSearchUsernameRequest(name));
+		instagram.sendRequest(new InstagramFollowRequest(userResult.getUser().getPk()));
+	}
+	
+	//1c
+	public void setLikesOnHashTags(String hashtag) throws ClientProtocolException, IOException{
+		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest(hashtag));
+		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+		    System.out.println("Post ID: " + feedResult.getPk());
+		    instagram.sendRequest(new InstagramLikeRequest(feedResult.getPk()));
+		}
+	}
+
 
 	public static void main(String[] args) throws ClientProtocolException, IOException {
 		OldInstagram instagram = new OldInstagram();
