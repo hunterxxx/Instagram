@@ -60,6 +60,21 @@ public class NewMongoDB {
 			System.out.println("Keine neuen Follower in DB eingefügt!");
 		}
 	}
+	
+	void insert100NewFollowersInDB(MongoCollection<Document> mongoCollection,List<InstagramUserSummary> followerList) {
+		ArrayList<Long> oldFollowerIDs = new ArrayList<Long>();
+		oldFollowerIDs = getFollowerIDsFromDB(mongoCollection);
+		int followerCount = 0;
+		for (int i = 0; i < 100; i++) {
+			if (!(oldFollowerIDs.contains(followerList.get(i).getPk()))) {
+				insertUserinDB(followerList.get(i), mongoCollection, true);
+				followerCount++;
+			}
+		}
+		if (followerCount == 0) {
+			System.out.println("Keine neuen Follower in DB eingefügt!");
+		}
+	}
 
 	void setFollowStatus(MongoCollection<Document> mongoCollection, List<InstagramUserSummary> followerList) {
 		ArrayList<Long> dbFollowerIDs = new ArrayList<Long>();

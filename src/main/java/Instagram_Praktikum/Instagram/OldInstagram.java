@@ -66,6 +66,11 @@ public class OldInstagram {
 		int postCount = request().getUser().getMedia_count();
 		return postCount;
 	}
+	
+//	public int getAllMediaId(){
+//		//int mediaIds = request().getUser().getm;
+//		//return mediaIds;
+//	}
 
 	public List<InstagramUserSummary> getAllFollowers() {
 		InstagramGetUserFollowersResult myFollowers;
@@ -87,6 +92,8 @@ public class OldInstagram {
  */
 	//1a
 	public List<InstagramUserSummary> getAllFollowersFromAnAccount(String id) {
+		System.out.println("All Followers from: " + id);
+
 		InstagramGetUserFollowersResult myFollowers;
 		InstagramSearchUsernameResult userResult;
 		List<InstagramUserSummary> users = null;
@@ -116,20 +123,5 @@ public class OldInstagram {
 		    System.out.println("Post ID: " + feedResult.getPk());
 		    instagram.sendRequest(new InstagramLikeRequest(feedResult.getPk()));
 		}
-	}
-
-
-	public static void main(String[] args) throws ClientProtocolException, IOException {
-		OldInstagram instagram = new OldInstagram();
-		NewInstagram newInstagram = new NewInstagram();
-		for (InstagramUserSummary user : instagram.getAllFollowers()) {
-			//System.out.println(user.getUsername() + " follows CarRx7Hunter!");
-			System.out.println(user.getPk());
-		}
-		System.out.println("Anazahl Follower: " + instagram.getFollowerCount());
-		System.out.println("Anzahl Following: " + instagram.getFollowingCount());
-		System.out.println("Anzahl Posts: " + instagram.getPostCount());
-		System.out.println("Anzahl Likes: " + newInstagram.likesCount());
-		System.out.println("Anzahl Kommentare: " + newInstagram.commentsCount());
 	}
 }

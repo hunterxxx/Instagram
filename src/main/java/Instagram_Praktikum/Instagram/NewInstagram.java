@@ -28,8 +28,8 @@ public class NewInstagram {
 
 	public NewInstagram() {
 		InstagramService service = new InstagramAuthService().apiKey(clientId).apiSecret(clientSecret)
-				.callback(callbackUrl).scope("basic").build();
-		// public_content likes follower_list relationships
+				.callback(callbackUrl).scope("comments").build();
+		// basic public_content likes follower_list relationships
 
 		String authorizationUrl = service.getAuthorizationUrl();
 
@@ -73,11 +73,18 @@ public class NewInstagram {
 	/**
 	 * @params String hashtag, int count
 	 */
-	public void setComments() throws InstagramException{
-		String mediaId = "142856861";
+	public void setComments(String comment) throws InstagramException{
+		String mediaIds = "1525434981060739387_5450704343";
 
-		MediaCommentResponse response = instagram.setMediaComments(mediaId, "Sample Comment");
+		MediaCommentResponse response = instagram.setMediaComments(mediaIds, comment);
 		CommentData commentData = response.getCommentData();
 		System.out.println(commentData);
+	}
+	
+	//Most recent media by UserId
+	public String getMostRecentMedia(String id) throws InstagramException{
+		MediaFeed mediaFeed = instagram.getRecentMediaFeed(id);
+		String mediaFeeds = mediaFeed.getData().get(0).getId();		
+		return mediaFeeds;
 	}
 }
