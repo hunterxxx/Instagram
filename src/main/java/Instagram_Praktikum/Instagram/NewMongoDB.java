@@ -28,6 +28,19 @@ public class NewMongoDB {
 		}
 		return oldFollowerIDs;
 	}
+	
+	// holt die IDs der Follower aus der Datenbank
+	ArrayList<String> getFollowerNamesFromDB(MongoCollection<Document> mongoCollection) {
+		MongoCursor<Document> idCursor;
+		Document docOldFollower;
+		idCursor = mongoCollection.find().iterator();
+		ArrayList<String> oldFollowerNames = new ArrayList<String>();
+		while (idCursor.hasNext()) {
+			docOldFollower = idCursor.next();
+			oldFollowerNames.add(docOldFollower.getString("Follower Name"));
+		}
+		return oldFollowerNames;
+	}
 
 	// Collection Inhalt anzeigen (Json)
 	void showCollection(MongoCollection<Document> mongoCollection) {
@@ -114,5 +127,5 @@ public class NewMongoDB {
 			unFollowerCount++;
 		}
 		System.out.println(unFollowerCount + " User folgen jetzt nicht mehr!");
-	}
+	}	
 }

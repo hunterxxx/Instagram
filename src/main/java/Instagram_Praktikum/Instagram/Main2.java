@@ -9,10 +9,6 @@ import java.util.List;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramUserSummary;
 import org.bson.Document;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-
 public class Main2 {
 	public static void main(String[] args) throws MalformedURLException, IOException {
 		OldInstagram instagram = new OldInstagram();		
@@ -23,12 +19,12 @@ public class Main2 {
 //		}
 		
 		//1b
-//		ArrayList<String> instagramNames = new ArrayList<String>();
-//		instagramNames.addAll(Arrays.asList("hunter.f", "yoyoyo"));
-//		for (String name : instagramNames) {
-//			instagram.setFollowers(name);
-//			System.out.println("Followed: " + name);
-//		}
+		ArrayList<String> instagramNames = new ArrayList<String>();
+		instagramNames.addAll(Arrays.asList("hunter.f", "yoyoyo"));
+		for (String name : instagramNames) {
+			instagram.setFollowers(name);
+			System.out.println("Followed: " + name);
+		}
 		
 		//1c
 		//instagram.setLikesOnHashTags("cdp100");

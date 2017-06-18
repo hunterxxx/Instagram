@@ -92,7 +92,7 @@ public class OldInstagram {
  */
 	//1a
 	public List<InstagramUserSummary> getAllFollowersFromAnAccount(String id) {
-		System.out.println("All Followers from: " + id);
+		//System.out.println("All Followers from: " + id);
 
 		InstagramGetUserFollowersResult myFollowers;
 		InstagramSearchUsernameResult userResult;
@@ -123,5 +123,22 @@ public class OldInstagram {
 		    System.out.println("Post ID: " + feedResult.getPk());
 		    instagram.sendRequest(new InstagramLikeRequest(feedResult.getPk()));
 		}
+	}
+	
+	public void setLikesOnId(long id) throws ClientProtocolException, IOException{
+//		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest("github"));
+//		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+//		    System.out.println("Post ID: " + feedResult.getPk());
+//		}
+		instagram.sendRequest(new InstagramLikeRequest(id));
+	}
+	
+	//Like the most recent post of the user, based on username
+	public void setLikesOnIdOfUsername(String name) throws ClientProtocolException, IOException{
+		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest(name));
+		//for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+		    //System.out.println("Post ID: " + feedResult.getPk());
+			instagram.sendRequest(new InstagramLikeRequest(tagFeed.getItems().get(0).getPk()));
+		//}
 	}
 }

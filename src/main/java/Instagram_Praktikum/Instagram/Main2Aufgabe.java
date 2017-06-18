@@ -13,26 +13,59 @@ import com.mongodb.client.MongoDatabase;
 
 public class Main2Aufgabe {
 	public static void main(String[] args) throws MalformedURLException, IOException {
-		OldInstagram instagram = new OldInstagram();		
+		OldInstagram oldInstagram = new OldInstagram();	
+		//NewInstagram newInstagram= new NewInstagram();
 
-		//2a extract 100 Followers from Cristiano Ronaldo @cristiano and put into DB
-		
+		//2.Aufgabe
 		NewMongoDB mongodb = new NewMongoDB();
 		MongoClient mongoClient = new MongoClient();
 		MongoDatabase database = mongoClient.getDatabase("InstagramDB");
-		MongoCollection<Document> FCollection = database.getCollection("Follower");
+		
+		//2a extract 100 Followers from Cristiano Ronaldo @cristiano and put into DB
+		
+//
+//		MongoCollection<Document> FCollection = database.getCollection("FFollower");
+//		mongodb.insert100NewFollowersInDB(FCollection,oldInstagram.getAllFollowersFromAnAccount("cristiano"));
+//		
+//		for(String name : mongodb.getFollowerNamesFromDB(FCollection)){
+//			System.out.println(name);
+//			oldInstagram.setFollowers(name);
+//		}
+//		
+//		//FCollection.drop();
+//		mongodb.showCollection(FCollection);
+//		mongoClient.close();
+		
+		//2b extract 100 Followers from Selena Gomez @selenagomez and like the latest post and put into DB
+		MongoCollection<Document> FLCollection = database.getCollection("FLFollower");
+		NewInstagram newInstagram= new NewInstagram();
+//		mongodb.insert100NewFollowersInDB(FLCollection,oldInstagram.getAllFollowersFromAnAccount("selenagomez"));
 
-		//mongoCollection.drop();
-		mongodb.insert100NewFollowersInDB(FCollection, instagram.getAllFollowers());
+		//String followerID = Long.toString(mongodb.getFollowerIDsFromDB(FLCollection).get(1));
 		
-		List<InstagramUserSummary> user = instagram.getAllFollowersFromAnAccount("cristiano");
+		//System.out.println("Follower ID: " + followerID);
+		String mostRecentMedia = newInstagram.getMostRecentMedia("5450704343");
+		System.out.println("Most recent media: " + mostRecentMedia);
 		
-		System.out.println("100 Followers from Cristiano Ronaldo are added to DB");
-		for (int i = 0; i < 100; i++) {
-			System.out.println(user.get(i).getUsername());
-		}
-		
-		mongodb.showCollection(FCollection);
+		oldInstagram.setLikesOnId(mostRecentMedia);
+
+
+//		mongodb.insert100NewFollowersInDB(FLCollection,oldInstagram.getAllFollowersFromAnAccount("selenagomez"));
+//		
+//		for(String name : mongodb.getFollowerNamesFromDB(FLCollection)){
+//			//newInstagram.getMostRecentMedia(Long.toString(id));
+//			oldInstagram.setFollowers(name);
+//			oldInstagram.setLikesOnIdOfUsername(name);
+//		}
+
+		//oldInstagram.setLikesOnIdOfUsername("5450704343");
+		mongodb.showCollection(FLCollection);
 		mongoClient.close();
+		
+		//2c extract 100 Followers from Ariana Grande @arianagrande, like and comment the latest post and put into DB
+//		MongoCollection<Document> FLKCollection = database.getCollection("FLKFollower");
+//		mongodb.insert100NewFollowersInDB(FLKCollection,oldInstagram.getAllFollowersFromAnAccount("arianagrande"));
+//		mongodb.showCollection(FLKCollection);
+//		mongoClient.close();
 	}
 }
