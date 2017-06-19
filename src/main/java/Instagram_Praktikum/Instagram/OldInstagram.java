@@ -38,6 +38,13 @@ public class OldInstagram {
 		instagram.setup();
 		instagram.login();
 	}
+	
+	public String getUserId(String name) throws ClientProtocolException, IOException{
+		InstagramSearchUsernameResult userResult = instagram.sendRequest(new InstagramSearchUsernameRequest("github"));
+		String id = Long.toString(userResult.getUser().getPk());
+		System.out.println("ID for @github is " + id);
+		return id;
+	}
 
 	public InstagramSearchUsernameResult request() {
 		InstagramSearchUsernameResult userResult = null;
@@ -125,20 +132,21 @@ public class OldInstagram {
 		}
 	}
 	
-	public void setLikesOnId(long id) throws ClientProtocolException, IOException{
-//		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest("github"));
-//		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
-//		    System.out.println("Post ID: " + feedResult.getPk());
-//		}
-		instagram.sendRequest(new InstagramLikeRequest(id));
-	}
-	
 	//Like the most recent post of the user, based on username
 	public void setLikesOnIdOfUsername(String name) throws ClientProtocolException, IOException{
 		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest(name));
-		//for (InstagramFeedItem feedResult : tagFeed.getItems()) {
-		    //System.out.println("Post ID: " + feedResult.getPk());
-			instagram.sendRequest(new InstagramLikeRequest(tagFeed.getItems().get(0).getPk()));
-		//}
+		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+		    System.out.println("Post ID: " + feedResult.getPk());
+			instagram.sendRequest(new InstagramLikeRequest(feedResult.getPk()));
+		}
+	}
+	
+	//1d
+	public void searchPostByHashTag(String hashtag) throws ClientProtocolException, IOException{
+		InstagramFeedResult tagFeed = instagram.sendRequest(new InstagramTagFeedRequest(hashtag));
+		for (InstagramFeedItem feedResult : tagFeed.getItems()) {
+			long postID = feedResult.getPk();
+			System.out.println(postID);
+		}
 	}
 }

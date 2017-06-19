@@ -11,6 +11,7 @@ import org.jinstagram.auth.model.Verifier;
 import org.jinstagram.auth.oauth.InstagramService;
 import org.jinstagram.entity.comments.CommentData;
 import org.jinstagram.entity.comments.MediaCommentResponse;
+import org.jinstagram.entity.likes.LikesFeed;
 import org.jinstagram.entity.users.feed.MediaFeed;
 import org.jinstagram.entity.users.feed.MediaFeedData;
 import org.jinstagram.exceptions.InstagramException;
@@ -73,18 +74,24 @@ public class NewInstagram {
 	/**
 	 * @params String hashtag, int count
 	 */
-	public void setComments(String comment) throws InstagramException{
-		String mediaIds = "1525434981060739387_5450704343";
+	public void setComments(String comment, String mediaIds) throws InstagramException{
+		//String mediaIds = "1525434981060739387_5450704343";
 
 		MediaCommentResponse response = instagram.setMediaComments(mediaIds, comment);
 		CommentData commentData = response.getCommentData();
 		System.out.println(commentData);
 	}
 	
-	//Most recent media by UserId
-	public String getMostRecentMedia(String id) throws InstagramException{
-		MediaFeed mediaFeed = instagram.getRecentMediaFeed(id);
-		String mediaFeeds = mediaFeed.getData().get(0).getId();		
+	//Most recent media by UserId (only myself)
+	public String getMostRecentMedia(String userId) throws InstagramException{
+		//String validId = postId + "_" + userId;
+		MediaFeed mediaFeed = instagram.getRecentMediaFeed(userId);
+		String mediaFeeds = mediaFeed.getData().get(3).getId();		
 		return mediaFeeds;
+	}
+	
+	public void setLikesByPostId(String postId) throws InstagramException{
+		LikesFeed feed = instagram.setUserLike(postId);
+		System.out.println(feed);
 	}
 }
